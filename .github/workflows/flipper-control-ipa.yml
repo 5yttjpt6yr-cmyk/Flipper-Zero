@@ -1,0 +1,26 @@
+name: Compilar Flipper Control para iPhone
+on:
+  workflow_dispatch:
+  push:
+    paths:
+      - 'Flipper Zero/FlipperControl-iOS/**'
+      - '.github/workflows/flipper-control-ipa.yml'
+permissions:
+  contents: read
+jobs:
+  build:
+    runs-on: macos-15
+    defaults:
+      run:
+        working-directory: Flipper Zero/FlipperControl-iOS
+    steps:
+      - uses: actions/checkout@v4
+      - name: Instalar XcodeGen
+        run: brew install xcodegen
+      - name: Compilar IPA sin firmar
+        run: ./build_ipa_macos.sh
+      - uses: actions/upload-artifact@v4
+        with:
+          name: FlipperControl-IPA-sin-firmar
+          path: Flipper Zero/FlipperControl-iOS/build/FlipperControl-unsigned.ipa
+          if-no-files-found: error
